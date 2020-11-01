@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--https://coolors.co/cdb4db-ffc8dd-ffafcc-bde0fe-a2d2ff-->
+    <color name="colorPrimary">#ffafcc</color>
+    <color name="colorPrimaryDark">#a2d2ff</color>
+    <color name="colorAccent">#cdb4db</color>
+</resources>
