@@ -3,7 +3,7 @@ package com.example.childdevelopment
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.View
+import android.view.*
 import androidx.appcompat.app.ActionBar
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_main.*
@@ -14,7 +14,7 @@ import java.net.URL
 import kotlinx.coroutines.*
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), RecyclerAdapter.CellClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -34,13 +34,19 @@ class MainActivity : AppCompatActivity() {
 
     fun populateMenu() = CoroutineScope(Dispatchers.Main).launch {
         val menuData = makeNetworkCall()
+        var count = 0
+        menuData.forEach{
+            Log.d("$count", it)
+            count += 1
+        }
 
-        Log.d("This is the data: ", menuData)
+        main_menu_RV.layoutManager = LinearLayoutManager(this@MainActivity)
+        main_menu_RV.adapter = RecyclerAdapter(menuData, this@MainActivity, this@MainActivity)
 
     }
 
     // Get data from .csv
-    suspend fun makeNetworkCall(): String = withContext(Dispatchers.IO) IO@{
+    suspend fun makeNetworkCall(): List<String> = withContext(Dispatchers.IO) IO@{
 //      stackoverflow.com/questions/29802323/android-with-kotlin-how-to-use-httpurlconnection
 //      stackoverflow.com/questions/45940861/android-8-cleartext-http-traffic-not-permitted
 //      stackoverflow.com/questions/59472320/kotlin-read-and-display-data-from-google-sheets
@@ -54,8 +60,8 @@ class MainActivity : AppCompatActivity() {
         } finally {
             urlConnection.disconnect()
         }
-
-        return@IO data
+        var result = data.lines().map { it.trim() }
+        return@IO result
     }
 
     // Old method: API call to Google Sheets
@@ -86,7 +92,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCellClickListener(stringIn: String) {
-
+        Log.d("This is: ", stringIn)
     }
 
     override fun onLongClick(stringIn: String) {
